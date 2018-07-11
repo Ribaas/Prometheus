@@ -14,12 +14,11 @@ public class Prometheus {
      */
     public static Logger mainLogger;
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException{
         
         mainLogger = Logger.getNewLogger("test1.txt");
 
-        mainLogger.log("A aplicacao esta iniciando");
-        
+        mainLogger.log("A aplicacao esta iniciando", Thread.currentThread());
         close();
     }
     
@@ -28,14 +27,18 @@ public class Prometheus {
      */
     public static void close(){
         
+        mainLogger.log("A aplicacao esta encerrando", Thread.currentThread());
+        
         try{
-            
-            mainLogger.getBufferedWriter().close();
+           
+            mainLogger.closeLogger();
             
         }
-        catch(IOException ex){
+        catch(Exception ex){
+            
             System.out.println("Nao foi possivel encerrar o Logger");
-            return;
+            ex.printStackTrace();
+            
         }
         
         System.exit(0);
