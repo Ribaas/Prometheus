@@ -14,7 +14,7 @@ public class Prometheus {
      */
     public static Logger mainLogger;
     
-    public static void main(String[] args) throws InterruptedException{
+    public static void main(String[] args) {
         
         mainLogger = Logger.getNewLogger("test1.txt");
 
