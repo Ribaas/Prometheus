@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Classe responsável pelo registro (Log) do sistema.
  */
-public final class Logger {
+public final class Logger{
     
     private final FileWriter fileWriter;
     private final BufferedWriter bufferedWriter;
@@ -23,12 +23,13 @@ public final class Logger {
     public BufferedWriter getBufferedWriter() {
         return bufferedWriter;
     }
-
+    
+    //Contrutor do Logger
     private Logger(String fileName) throws IOException{
 
         fileWriter = new FileWriter(fileName);
         bufferedWriter = new BufferedWriter(fileWriter);
-        
+               
     }
     
     /**
@@ -45,9 +46,11 @@ public final class Logger {
             return new Logger(fileName);
             
         }
-        catch(IOException ex){
+        catch(Exception ex){
             
             System.out.println("Nao foi possivel iniciar um novo Logger");
+            ex.printStackTrace();
+            
             return null;
             
         }
@@ -57,42 +60,63 @@ public final class Logger {
     /**
      * Registra uma linha no Log com informação de data e hora atual.
      * 
-     * @param msg Mensagem a ser registrada no Log
+     * @param msg Mensagem a ser registrada no Log.
+     * @param th Thread que requisita a gravação no Log.
      */
-    public void log(String msg){
+    public void log(String msg, Thread th){
         
-        try {
+        String fullmsg = LocalDateTime.now().format(dtf) + " (" + Thread.currentThread().getStackTrace()[2].getClassName() + "[" + th.getName() + "]) -> " + msg;
+        
+        try{
             
-            bufferedWriter.write(LocalDateTime.now().format(dtf));
-            bufferedWriter.write(" -> ");
-            bufferedWriter.write(msg);
+            bufferedWriter.write(fullmsg);
             bufferedWriter.newLine();
-            
-        } catch (IOException ex) {
-            
-            System.out.println("Nao foi possivel registrar a mensagem");
+            bufferedWriter.flush();
             
         }
+        catch(Exception ex){
+            
+            System.out.println("Nao foi possivel gravar no log:");
+            ex.printStackTrace();
+            
+        }
+        
     }
     
     /**
      * Registra uma linha no Log sem informação de data e hora atual.
      * 
      * @param msg mensagem a ser registrada no Log
+     * @param th Thread que requisita a gravação no Log.
      */
-    public void logWithoutTime(String msg){
+    public void logWithoutTime(String msg, Thread th){
         
-        try {
+        //String que armazena a mensagem completa a ser gravada no Log
+        String fullmsg = "(" + Thread.currentThread().getStackTrace()[2].getClassName() + "[" + th.getName() + "]) -> " + msg;
+        
+        try{
             
-            bufferedWriter.write(" -> ");
-            bufferedWriter.write(msg);
+            bufferedWriter.write(fullmsg);
             bufferedWriter.newLine();
-            
-        } catch (IOException ex) {
-            
-            System.out.println("Nao foi possivel registrar a mensagem");
+            bufferedWriter.flush();
             
         }
+        catch(Exception ex){
+            
+            System.out.println("Nao foi possivel gravar no log:");
+            ex.printStackTrace();
+            
+        }
+    }
+    
+    /**
+     * Fecha o Logger e encerra a gravação de arquivo. 
+     * 
+     * @throws IOException se não for possível encerrar a gravação corretamente.
+     */
+    public void closeLogger() throws IOException{
+                
+        getBufferedWriter().close();
         
     }
     
