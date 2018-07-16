@@ -1,9 +1,7 @@
 package com.prometheus.core;
 
-import com.prometheus.dataIO.IOAdmin;
 import com.prometheus.log.Logger;
 import java.io.IOException;
-import java.util.logging.Level;
 
 /**
  * Classe principal do sistema.
