@@ -1,5 +1,6 @@
 package com.prometheus.core;
 
+import com.prometheus.dataIO.IOAdmin;
 import com.prometheus.log.Logger;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -9,16 +10,30 @@ import java.util.logging.Level;
  */
 public class Prometheus {
     
-    /**
-     * O Logger principal do sistema, instanciado durante o ínicio do mesmo.
-     */
-    public static Logger mainLogger;
+    //Fields
+    private static Logger mainLogger;
+
     
-    public static void main(String[] args) {
+    //Getters and Setters
+    
+    /**
+     * Retorna o {@link Logger} principal do sistema, instanciado durante o ínicio do mesmo.
+     * 
+     * @return O Logger
+     */
+    public static Logger getMainLogger(){
+        
+        return Prometheus.mainLogger;
+        
+    }
+    
+    public static void main(String[] args) throws InterruptedException{
         
         mainLogger = Logger.getNewLogger("test1.txt");
-
         mainLogger.log("A aplicacao esta iniciando", Thread.currentThread());
+        
+        
+        
         close();
     }
     

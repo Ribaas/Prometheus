@@ -27,7 +27,7 @@ public final class Logger{
     //Contrutor do Logger
     private Logger(String fileName) throws IOException{
 
-        fileWriter = new FileWriter(fileName);
+        fileWriter = new FileWriter(fileName, true);
         bufferedWriter = new BufferedWriter(fileWriter);
                
     }
@@ -36,8 +36,8 @@ public final class Logger{
      * Instancia e prepara o Logger para criar um arquivo de Log, utilizando o nome passado por parâmetro.
      * 
      * @param fileName  Nome do arquivo de Log com extensão.
-     * @return  Uma instância da classe Logger se não houver uma IOException;
-     *          null caso contrário.
+     * @return  Uma instância da classe Logger se não houver uma IOException;<br>
+     *          <code>null</code> caso contrário.
      */
     public static Logger getNewLogger(String fileName){
         
