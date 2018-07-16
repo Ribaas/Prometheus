@@ -1,8 +1,10 @@
 package com.prometheus.core;
 
 import com.prometheus.log.Logger;
+import com.prometheus.user.AcConnection;
+import com.prometheus.user.Session;
+
 import java.io.IOException;
-import java.util.logging.Level;
 
 /**
  * Classe principal do sistema.
@@ -10,21 +12,27 @@ import java.util.logging.Level;
 public class Prometheus {
     
     /**
-     * O Logger principal do sistema, instanciado durante o Ã­nicio do mesmo.
+     * O Logger principal do sistema, instanciado durante o ínicio do mesmo.
      */
     public static Logger mainLogger;
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         
         mainLogger = Logger.getNewLogger("test1.txt");
 
         mainLogger.log("A aplicacao esta iniciando");
         
+        Session session1 = AcConnection.startSession();
+        
+        mainLogger.log("InThread Session running");
+        
+        mainLogger.log("A aplicacao esta encerrando");
+        
         close();
     }
     
     /**
-     * Fecha a aplicaÃ§Ã£o terminando seus serviÃ§os.
+     * Fecha a aplicação terminando seus serviços.
      */
     public static void close(){
         
