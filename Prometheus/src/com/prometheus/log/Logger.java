@@ -33,7 +33,7 @@ public final class Logger{
     }
     
     /**
-     * Instancia e prepara o Logger para criar um arquivo de Log, utilizando o nome passado por parâmetro.
+     * Instancia e prepara um Logger para criar um arquivo de Log, utilizando o nome passado por parâmetro.
      * 
      * @param fileName  Nome do arquivo de Log com extensão.
      * @return  Uma instância da classe Logger se não houver uma IOException;<br>
