@@ -1,0 +1,6 @@
+22-05-2018  11:29:15 -> A aplicacao esta iniciando
+22-05-2018  11:29:35 -> A aplicacao esta encerrando
+22-05-2018  11:43:29 -> A aplicacao esta iniciando
+22-05-2018  11:43:31 -> A aplicacao esta encerrando
+22-05-2018  11:44:04 -> A aplicacao esta iniciando
+22-05-2018  11:44:06 -> A aplicacao esta encerrando
