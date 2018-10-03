@@ -12,7 +12,7 @@ public final class IOAdmin implements Runnable{
     private ServerSocket server;
     private final int port;
     
-    private ArrayList<Thread> clientThreads;
+    //private ArrayList<Thread> clientThreads;
     private ArrayList<Client> clients;
     
     private boolean running = false;
@@ -42,16 +42,6 @@ public final class IOAdmin implements Runnable{
     }
 
     /**
-     * Retorna o ArrayList contendo as {@link Thread} dos Clients conectados a esta instância do IOAdmin.
-     * 
-     * @return O ArrayList
-     */
-    public ArrayList<Thread> getClientThreads() {
-        
-        return clientThreads;
-        
-    }
-    /**
      * Retorna o ArrayList contendo os {@link Client} conectados a esta instância do IOAdmin.
      * 
      * @return O ArrayList
@@ -61,7 +51,18 @@ public final class IOAdmin implements Runnable{
         return clients;
         
     }
-    
+    public Client getClientByID(int ID) {
+        
+        for(Client client : clients){
+             
+            if(client.getID() == ID) return client;
+                
+        }
+        
+        return null;
+        
+    }
+        
     /**
      * Verifica se esta instância do IOAdmin está em execução.
      * 
@@ -140,8 +141,9 @@ public final class IOAdmin implements Runnable{
         }
         catch(Exception ex){
             
-            Prometheus.getMainLogger().log("Nao foi possivel iniciar o ServerSocket na porta: " + port, Thread.currentThread());
+            Prometheus.getMainLogger().log("Nao foi possivel iniciar o ServerSocket(Porta " +  port + "): " + ex.toString(), Thread.currentThread());
             
+            running = false;
         }
         
         
@@ -156,45 +158,38 @@ public final class IOAdmin implements Runnable{
                 
                 try{
 
-                    temp = new Client( ClientDevice.UNKNOWN, server.accept() );
-                    Prometheus.getMainLogger().log("Conexao recebida de: " + temp.getSocket().getInetAddress().getHostAddress(), Thread.currentThread());
+                    temp = new Client( ClientDevice.UNKNOWN, server.accept() , this);
+                    Prometheus.getMainLogger().log("Conexao recebida de: " + temp.getSocket().getInetAddress().getHostAddress() + ":" + temp.getSocket().getLocalPort(), Thread.currentThread());
                     
+                    temp.setRunning(true);
                     clients.add(temp);
-                    new Thread(temp).start();
+                    new Thread(temp, "thClient-" + temp.getID()).start();
+                    
+                    Prometheus.getMainLogger().log("Cliente (" + temp.getSocket().getInetAddress().getHostAddress() + ":" + temp.getSocket().getLocalPort() + ") conectado", Thread.currentThread());
 
                 }
                 catch(Exception ex){
 
-                    Prometheus.getMainLogger().log("Nao foi possivel aceitar uma nova conexao: " + ex.getMessage(), Thread.currentThread());
+                    Prometheus.getMainLogger().log("Nao foi possivel aceitar uma nova conexao: " + ex.toString(), Thread.currentThread());
 
                 }
                 
             }
-            
-            
-            
+
         }
         
         //Finalizing
-        try {
-            
-            disconnectAll();
-            
-        } catch (Exception ex) {
-            
-            Prometheus.getMainLogger().log("Nao foi possivel desconetar os clientes do ServerSocket na porta:" + port, Thread.currentThread());
-            
-        }
-        
         try {
             
             server.close();
             
         } catch (Exception ex) {
             
-            Prometheus.getMainLogger().log("Nao foi possivel encerrar o ServerSocket na porta:" + port, Thread.currentThread());
+            Prometheus.getMainLogger().log("Nao foi possivel encerrar o ServerSocket na porta " + port + ": " + ex.getMessage(), Thread.currentThread());
             
         }
+        
+        disconnectAll();
         
     }
 
@@ -206,12 +201,12 @@ public final class IOAdmin implements Runnable{
     
     
     
-    public void disconnectAll() throws Exception{
+    public void disconnectAll(){
         
         for(Client client : clients){
-            
+             
             client.disconnect();
-            
+                
         }
         
     }

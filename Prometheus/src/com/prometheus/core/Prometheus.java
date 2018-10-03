@@ -26,9 +26,11 @@ public class Prometheus {
         
     }
     
+    
+    
     public static void main(String[] args) throws InterruptedException{
         
-        mainLogger = Logger.getNewLogger("test1.txt");
+        mainLogger = Logger.getNewLogger("log1.txt");
         mainLogger.log("A aplicacao esta iniciando", Thread.currentThread());
         
         mainIO = IOAdmin.getNewIOAdmin(50000);
@@ -36,7 +38,7 @@ public class Prometheus {
         mainIO.setAcceptingClients(true);
         new Thread(mainIO, "thIOAdmin").start();
         
-        Thread.sleep(8000);
+        Thread.sleep(15000);
         
         close();
         
