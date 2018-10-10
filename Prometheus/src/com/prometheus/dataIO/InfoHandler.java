@@ -2,8 +2,6 @@ package com.prometheus.dataIO;
 
 import com.prometheus.core.Prometheus;
 import com.prometheus.utils.InfoBlock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class InfoHandler {
     

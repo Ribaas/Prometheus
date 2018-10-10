@@ -1,14 +1,14 @@
 package com.prometheus.dataIO;
 
-import com.prometheus.core.Prometheus;
-import com.prometheus.log.Logger;
-import com.prometheus.utils.BlockType;
-import com.prometheus.utils.InfoBlock;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.logging.Level;
+
+import com.prometheus.core.Prometheus;
+import com.prometheus.log.Logger;
+import com.prometheus.utils.BlockType;
+import com.prometheus.utils.InfoBlock;
 
 public class Client implements Runnable{
     
