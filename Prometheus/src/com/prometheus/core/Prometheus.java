@@ -28,17 +28,22 @@ public class Prometheus {
     
     
     
-    public static void main(String[] args) throws InterruptedException{
+    public static void main(String[] args) throws Exception{
         
+    	//Logger initialization
         mainLogger = Logger.getNewLogger("log1.txt");
         mainLogger.log("A aplicacao esta iniciando", Thread.currentThread());
         
+        //Main IOAdmin initialization
         mainIO = IOAdmin.getNewIOAdmin(50000);
         mainIO.setRunning(true);
         mainIO.setAcceptingClients(true);
         new Thread(mainIO, "thIOAdmin").start();
         
+        
+        //Waits the client connection and communication before closing the application
         Thread.sleep(15000);
+        
         
         close();
         
@@ -51,8 +56,7 @@ public class Prometheus {
         
         mainLogger.log("A aplicacao esta encerrando", Thread.currentThread());
         
-        mainIO.setAcceptingClients(false);
-        mainIO.setRunning(false);
+        mainIO.close();
         Thread.sleep(500);
         
         try{

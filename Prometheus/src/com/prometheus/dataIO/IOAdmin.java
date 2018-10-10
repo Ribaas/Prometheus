@@ -1,9 +1,9 @@
 package com.prometheus.dataIO;
 
-import com.prometheus.core.Prometheus;
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+
+import com.prometheus.core.Prometheus;
 
 
 public final class IOAdmin implements Runnable{
@@ -148,7 +148,7 @@ public final class IOAdmin implements Runnable{
         
         
         //clientThreads = new ArrayList();
-        clients = new ArrayList();
+        clients = new ArrayList<Client>();
         Client temp;
                 
         //Main code
@@ -170,7 +170,7 @@ public final class IOAdmin implements Runnable{
                 }
                 catch(Exception ex){
 
-                    Prometheus.getMainLogger().log("Nao foi possivel aceitar uma nova conexao: " + ex.toString(), Thread.currentThread());
+                    if(!server.isClosed()) Prometheus.getMainLogger().log("Nao foi possivel aceitar uma nova conexao: " + ex.toString(), Thread.currentThread());
 
                 }
                 
@@ -178,19 +178,7 @@ public final class IOAdmin implements Runnable{
 
         }
         
-        //Finalizing
-        try {
-            
-            server.close();
-            
-        } catch (Exception ex) {
-            
-            Prometheus.getMainLogger().log("Nao foi possivel encerrar o ServerSocket na porta " + port + ": " + ex.getMessage(), Thread.currentThread());
-            
-        }
-        
-        disconnectAll();
-        
+                
     }
 
     private static boolean validatePort (int port){
@@ -199,6 +187,26 @@ public final class IOAdmin implements Runnable{
         
     }
     
+    public void close() {
+    	
+        //Finalizing
+    	acceptingClients = false;
+    	running = false;
+    	
+    	disconnectAll();
+    	
+        try {
+            
+            server.close();
+            Prometheus.getMainLogger().log("Encerrado o ServerSocket na porta: " + port, Thread.currentThread());
+            
+        } catch (Exception ex) {
+            
+            Prometheus.getMainLogger().log("Nao foi possivel encerrar o ServerSocket na porta " + port + ": " + ex.getMessage(), Thread.currentThread());
+            
+        }
+    	
+    }
     
     
     public void disconnectAll(){
