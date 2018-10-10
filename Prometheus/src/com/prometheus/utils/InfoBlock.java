@@ -13,21 +13,22 @@ public class InfoBlock implements Serializable{
     
     //Fields
     public final static long TIME_THRESHOLD = 3000L; //The margin of error in ms, allowed during the validation
+
     
-    private final String ID;            //The InfoBLock ID consists in a two-part ID: 
+    //private final String ID;            //The InfoBLock ID consists in a two-part ID: 
                                         //the first one identifies the group this InfoBlock belongs to
                                         //the second one identifies the InfoBlock itself
     private final BlockType type;
 
     private final boolean immediate;
     private final Timestamp timestamp;
-    private boolean validity;
+    private boolean validity = false;
 
     private final Object[] content;
 
     //Constructor
-    public InfoBlock(String ID, BlockType type, boolean isImmediate, Object[] content) {
-            this.ID = ID;
+    public InfoBlock(BlockType type, boolean isImmediate, Object[] content) {
+            //this.ID = ID;
             this.type = type;
 
             this.immediate = isImmediate;
@@ -38,19 +39,27 @@ public class InfoBlock implements Serializable{
 
     
     //Getters
-    public String getBlockID() {
     
-        String[] ids = ID.split("-");
-        return ids[1];
-        
+    //<editor-fold defaultstate="collapsed" desc="id">
+    /*
+    public String getID() {
+    
+    return ID;
+    
+    }
+    public String getBlockID() {
+    String[] ids = ID.split("-");
+    return ids[1];
     }
     public String getGroupID() {
     
-        String[] ids = ID.split("-");
-        return ids[0];
+    String[] ids = ID.split("-");
+    return ids[0];
     
     }
-
+*/
+    //</editor-fold>
+    
     public BlockType getType() {
         return type;
     }

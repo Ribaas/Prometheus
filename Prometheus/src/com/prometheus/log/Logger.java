@@ -24,7 +24,7 @@ public final class Logger{
         return bufferedWriter;
     }
     
-    //Contrutor do Logger
+    //Construtor do Logger
     private Logger(String fileName) throws IOException{
 
         fileWriter = new FileWriter(fileName, true);
@@ -66,6 +66,7 @@ public final class Logger{
     public void log(String msg, Thread th){
         
         String fullmsg = LocalDateTime.now().format(dtf) + " (" + Thread.currentThread().getStackTrace()[2].getClassName() + "[" + th.getName() + "]) -> " + msg;
+        System.out.println(fullmsg);
         
         try{
             
@@ -93,6 +94,7 @@ public final class Logger{
         
         //String que armazena a mensagem completa a ser gravada no Log
         String fullmsg = "(" + Thread.currentThread().getStackTrace()[2].getClassName() + "[" + th.getName() + "]) -> " + msg;
+        System.out.println(fullmsg);
         
         try{
             
@@ -115,7 +117,11 @@ public final class Logger{
      * @throws IOException se não for possível encerrar a gravação corretamente.
      */
     public void closeLogger() throws IOException{
-                
+        
+        bufferedWriter.write("========================================================================================");
+        bufferedWriter.newLine();
+        bufferedWriter.flush();
+        
         getBufferedWriter().close();
         
     }
