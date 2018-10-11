@@ -27,7 +27,7 @@ public class InfoBlock implements Serializable{
     private final Object[] content;
 
     //Constructor
-    public InfoBlock(BlockType type, boolean isImmediate, Object[] content) {
+    public InfoBlock(BlockType type, boolean isImmediate, Object... content) {
             //this.ID = ID;
             this.type = type;
 
@@ -40,7 +40,6 @@ public class InfoBlock implements Serializable{
     
     //Getters
     
-    //<editor-fold defaultstate="collapsed" desc="id">
     /*
     public String getID() {
     
@@ -56,9 +55,7 @@ public class InfoBlock implements Serializable{
     String[] ids = ID.split("-");
     return ids[0];
     
-    }
-*/
-    //</editor-fold>
+    }*/
     
     public BlockType getType() {
         return type;
