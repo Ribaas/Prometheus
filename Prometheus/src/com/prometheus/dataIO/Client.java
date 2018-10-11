@@ -139,24 +139,28 @@ public class Client implements Runnable{
         //Main code
         while(running){
             
+        	//Checks if the Client is logged, if not proceeds with authentication, otherwise proceeds with communication 
             if(!logged){
                 
                 //Authentication
                 try {
-            
+                	
+                	//Receives an InfoBlock
                     InfoBlock infoBlock = (InfoBlock)input.readObject();
 
+                    //Verifies if the InfoBlock received is requesting Login
                     if(infoBlock.getType() == BlockType.COMMAND && infoBlock.getContent()[0].equals("<login>")){
 
-                        //some login code
+                        //Authentication code
                         logger.log("Autenticando cliente (" + address + ")", Thread.currentThread());
 
                         setLogged(true, 1234L);
 
                     }
                     else{
-
-                        output.writeObject(new InfoBlock(BlockType.INFORMATION, false, new Object[]{"<message>","Acesso negado!"} ) );
+                    	
+                    	//If the InfoBlock received is not requesting login the access is denied 
+                        output.writeObject(new InfoBlock(BlockType.INFORMATION, false, "<message>","Acesso negado!") );
 
                     }
                     
@@ -169,27 +173,49 @@ public class Client implements Runnable{
                 
             }
             else{
-                
+            	
+            	//Communication
+            	
+            	InfoBlock response = null;
+            	boolean responseAllowed = false; //Records if a response is allowed
+            	
                 try {
-                
+                	
+                	//Receives an InfoBlock
                     InfoBlock infoBlock = (InfoBlock)input.readObject();
 
+                    //Checks if the InfoBlock is valid
                     if(infoBlock.isValid()){
 
+                    	//Checks the InfoBlock type and treats it
                         switch( infoBlock.getType() ){
 
                             case INFORMATION:
+                            	
+                            	responseAllowed = false; //No response allowed
                                 InfoHandler.information(this, infoBlock);
+                                
                                 break;
+                                
 
                             case REQUEST:
-                                InfoHandler.request(this, infoBlock);
+                            	
+                            	responseAllowed = true; //Response allowed
+                                response = InfoHandler.request(this, infoBlock);
+                                
                                 break;
+                                
 
                             case COMMAND:
-                                InfoHandler.command(this, infoBlock);
+                            	
+                            	//Response only allowed if not a <disconnect> command
+                            	if( infoBlock.getContent()[0].equals("<disconnect>") )responseAllowed = false;
+                            	else responseAllowed = true;
+                            	
+                                response = InfoHandler.command(this, infoBlock);
+                                
                                 break;
-
+                                
                         }
 
                     }
@@ -197,9 +223,31 @@ public class Client implements Runnable{
                 }
                 catch (Exception ex) {
 
-                    logger.log("Nao foi possivel receber informação do cliente (" + address + ") : " + ex.toString(), Thread.currentThread());
+                    logger.log("Nao foi possivel receber informacao do cliente (" + address + ") : " + ex.toString(), Thread.currentThread());
+                    response = new InfoBlock(BlockType.INFORMATION, false, "<error>", "Não foi possivel receber informação");
 
                 }
+                
+                //Checks if a response is allowed and proceed accordingly
+                if(responseAllowed) {
+                	
+                	//If there is no response a InfoBlock is instantiated to inform it is <null>
+                	if(response == null) response = new InfoBlock(BlockType.INFORMATION, false, "<null>");
+                	
+                	//The response is sent
+                	try {
+                        
+                        output.writeObject(response);
+                        
+                    }
+                    catch (Exception ex) {
+
+                        logger.log("Nao foi possivel enviar informacao ao cliente (" + address + ") : " + ex.toString(), Thread.currentThread());
+
+                    }
+                	
+                }
+ 
                 
             }
             
@@ -209,7 +257,7 @@ public class Client implements Runnable{
     }
     
     
-    
+    //Disconnects the Client by closing its Socket and Logger and removing from the IOAdmin ArrayList of clients.
     public void disconnect(){
         
         running = false;
@@ -218,10 +266,7 @@ public class Client implements Runnable{
         try{
             //input.close();
             //output.close();
-
             socket.close();
-            
-            parentIO.getClients().remove(this);
 
             logger.log("Cliente (" + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort() + ") desconectado", Thread.currentThread());
             Prometheus.getMainLogger().log("Cliente (" + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort() + ") desconectado", Thread.currentThread());
@@ -233,6 +278,8 @@ public class Client implements Runnable{
             logger.log("Nao foi possivel desconetar o cliente (" + socket.getInetAddress().getHostAddress() + ":" + socket.getLocalPort() + "): " + ex.toString(), Thread.currentThread());
 
         }
+        
+        parentIO.getClients().remove(this);
         
         try{
 

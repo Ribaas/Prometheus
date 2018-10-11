@@ -1,5 +1,6 @@
 package com.prometheus.core;
 
+import com.prometheus.applications.AppManager;
 import com.prometheus.dataIO.IOAdmin;
 import com.prometheus.log.Logger;
 
@@ -41,8 +42,10 @@ public class Prometheus {
         new Thread(mainIO, "thIOAdmin").start();
         
         
+        //AppManager.startApplication("netflix");
+        
         //Waits the client connection and communication before closing the application
-        Thread.sleep(15000);
+        Thread.sleep(1000);
         
         
         close();
