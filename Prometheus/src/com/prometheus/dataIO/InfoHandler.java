@@ -1,5 +1,6 @@
 package com.prometheus.dataIO;
 
+import com.prometheus.applications.AppManager;
 import com.prometheus.core.Prometheus;
 import com.prometheus.utils.BlockType;
 import com.prometheus.utils.InfoBlock;
@@ -91,6 +92,30 @@ public final class InfoHandler {
                 }
                 
                 break;
+                
+            //Application related commands
+            case "<application>":
+            	
+            	if(infoBlock.getContent()[1].equals("<start>")) {
+            		
+            		try {
+            			
+						AppManager.startApplication( (String)infoBlock.getContent()[2] );
+						
+					} catch (Exception e) {
+						
+						response = new InfoBlock(BlockType.INFORMATION, false, "<error>", "Não foi possível iniciar a aplicação: " + e.getMessage());
+						
+					}
+            		
+            	}
+            	else if(infoBlock.getContent()[1].equals("<stop>")) {
+            		
+            		AppManager.stopApplication();
+            		
+            	}
+            	
+            	break;
                 
             //Disconnects the client    
             case "<disconnect>":

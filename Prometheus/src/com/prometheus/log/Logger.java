@@ -31,6 +31,10 @@ public final class Logger{
 
         fileWriter = new FileWriter(fileName, true);
         bufferedWriter = new BufferedWriter(fileWriter);
+        
+        bufferedWriter.write("========================================================================================");
+        bufferedWriter.newLine();
+        bufferedWriter.flush();
                
     }
     
@@ -119,11 +123,7 @@ public final class Logger{
      * @throws IOException se não for possível encerrar a gravação corretamente.
      */
     public void closeLogger() throws IOException{
-        
-        bufferedWriter.write("========================================================================================");
-        bufferedWriter.newLine();
-        bufferedWriter.flush();
-        
+                
         getBufferedWriter().close();
         
     }
